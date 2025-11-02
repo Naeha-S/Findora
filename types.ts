@@ -67,3 +67,15 @@ export interface Filters {
   pricingModels: PricingModel[];
   categories: Category[];
 }
+
+export interface TrustScore {
+  overall: number;
+  dataTraining: 'explicit' | 'opting-out' | 'unknown' | 'no-training';
+  dataRetention: 'permanent' | 'limited' | 'minimal' | 'unknown';
+  countryOfOrigin: string;
+  privacyPolicyQuality: 'excellent' | 'good' | 'fair' | 'poor' | 'unknown';
+  thirdPartySharing: boolean;
+  compliance: string[];
+  concerns: string[];
+  confidence: number;
+}

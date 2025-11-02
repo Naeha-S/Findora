@@ -4,6 +4,8 @@ import { Category, Filters, PricingModel } from '../types';
 interface SidebarProps {
   filters: Filters;
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
+  freshnessFilter: '24h' | '7d' | '30d' | 'all';
+  setFreshnessFilter: (value: '24h' | '7d' | '30d' | 'all') => void;
 }
 
 const pricingModelOptions = Object.values(PricingModel);
@@ -18,7 +20,7 @@ const Checkbox: React.FC<{ label: string; checked: boolean; onChange: (checked: 
     </label>
 );
 
-export const Sidebar: React.FC<SidebarProps> = ({ filters, setFilters }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ filters, setFilters, freshnessFilter, setFreshnessFilter }) => {
     
     // FIX: Corrected TypeScript syntax from 'key of' to 'keyof'. This resolves all reported errors.
     const handleQuickFilterChange = (key: keyof Filters, value: boolean) => {
@@ -43,6 +45,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ filters, setFilters }) => {
             pricingModels: [],
             categories: [],
         });
+        setFreshnessFilter('all');
     };
 
     return (
@@ -75,6 +78,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ filters, setFilters }) => {
                         {categoryOptions.map(cat => (
                            <Checkbox key={cat} label={cat} checked={filters.categories.includes(cat)} onChange={() => handleArrayFilterChange('categories', cat)} />
                         ))}
+                    </div>
+                </div>
+                <div>
+                    <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Freshness</h3>
+                    <div className="space-y-3">
+                        <Checkbox label="Last 24 hours" checked={freshnessFilter === '24h'} onChange={(c) => setFreshnessFilter(c ? '24h' : 'all')} />
+                        <Checkbox label="Last 7 days" checked={freshnessFilter === '7d'} onChange={(c) => setFreshnessFilter(c ? '7d' : 'all')} />
+                        <Checkbox label="Last 30 days" checked={freshnessFilter === '30d'} onChange={(c) => setFreshnessFilter(c ? '30d' : 'all')} />
                     </div>
                 </div>
             </div>

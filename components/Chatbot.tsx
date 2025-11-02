@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChatBubbleIcon, XIcon, SendIcon, RobotIcon, UserIcon } from './Icons';
-import { sendMessageToChatbot } from '../services/gemini';
+import { sendMessageToChatbot, isChatbotAvailable } from '../services/gemini';
 import { Tool } from '../types';
 import { marked } from 'marked';
 
@@ -42,16 +42,25 @@ export const Chatbot: React.FC<ChatbotProps> = ({ tools }) => {
     const handleSend = async () => {
         if (input.trim() === '' || isLoading) return;
 
+        if (!isChatbotAvailable()) {
+            const errorMessage: Message = { 
+                sender: 'bot', 
+                text: "⚠️ **Chatbot Not Configured**\n\nTo enable the AI chatbot, please set the `GEMINI_API_KEY` environment variable in your `.env` file.\n\nFor now, you can browse the tools using the filters and search above!" 
+            };
+            setMessages(prev => [...prev, errorMessage]);
+            return;
+        }
+
         const userMessage: Message = { sender: 'user', text: input };
         setMessages(prev => [...prev, userMessage]);
         setInput('');
         setIsLoading(true);
 
         try {
-            // FIX: Call the Gemini service to get a response.
+            // Call the Gemini service to get a response.
             const response = await sendMessageToChatbot(input, tools);
-            // FIX: Extract text from the response object.
-            const botMessage: Message = { sender: 'bot', text: response.text };
+            // Extract text from the response object.
+            const botMessage: Message = { sender: 'bot', text: typeof response.text === 'function' ? response.text() : response.text };
             setMessages(prev => [...prev, botMessage]);
         } catch (error) {
             console.error("Chatbot error:", error);

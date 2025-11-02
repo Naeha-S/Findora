@@ -1,0 +1,16 @@
+steps:
+  # Build the container image for scraper
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/aiscout-scraper:$SHORT_SHA', '-t', 'gcr.io/$PROJECT_ID/aiscout-scraper:latest', '.']
+  
+  # Push the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/aiscout-scraper:$SHORT_SHA']
+  
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/aiscout-scraper:latest']
+
+images:
+  - 'gcr.io/$PROJECT_ID/aiscout-scraper:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/aiscout-scraper:latest'
+
