@@ -177,5 +177,29 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// GET /api/tools/:id/trust - Get trust score for a tool (uses Admin SDK permissions)
+router.get('/:id/trust', async (req, res) => {
+  try {
+    const db = getFirestoreAdmin();
+    const { id } = req.params;
+
+    const trustDoc = await db.collection('trust_scores').doc(id).get();
+    if (!trustDoc.exists) {
+      return res.status(404).json({ error: 'Trust score not found' });
+    }
+
+    const data = trustDoc.data();
+    // Convert Firestore Timestamp to ISO where applicable
+    if (data && data.analyzedAt && data.analyzedAt.toDate) {
+      data.analyzedAt = data.analyzedAt.toDate().toISOString();
+    }
+
+    res.json({ trustScore: data });
+  } catch (error) {
+    console.error('Error fetching trust score:', error);
+    res.status(500).json({ error: 'Failed to fetch trust score', details: error.message });
+  }
+});
+
 export { router as toolsRouter };
 

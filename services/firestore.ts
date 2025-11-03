@@ -217,7 +217,27 @@ export const getTools = async (
     };
   } catch (error) {
     console.error('Error fetching tools:', error);
-    return { tools: [], total: 0, hasMore: false };
+
+    // If Firestore client access is blocked by rules (common in local dev),
+    // fall back to the backend admin API if available.
+    try {
+      const base = (import.meta as any)?.env?.VITE_API_BASE || 'http://localhost:8080';
+      const url = new URL(`${base}/api/tools`);
+      if (filters?.category) url.searchParams.append('category', String(filters.category));
+      url.searchParams.append('limit', String(limitCount));
+      const resp = await fetch(url.toString());
+      if (!resp.ok) throw new Error(`Backend tools fetch failed: ${resp.status}`);
+      const json = await resp.json();
+      // Backend returns tools already shaped; ensure consistent return shape
+      return {
+        tools: json.tools || [],
+        total: json.total || (json.tools ? json.tools.length : 0),
+        hasMore: json.hasMore || false
+      };
+    } catch (backendErr) {
+      console.error('Backend fallback failed for getTools:', backendErr);
+      return { tools: [], total: 0, hasMore: false };
+    }
   }
 };
 
@@ -369,8 +389,7 @@ export const getTrustScore = async (toolId: string): Promise<TrustScore | null> 
       thirdPartySharing: data.thirdPartySharing || false,
       compliance: data.compliance || [],
       concerns: data.concerns || [],
-      confidence: data.confidence || 0,
-      analyzedAt: convertTimestamp(data.analyzedAt)
+      confidence: data.confidence || 0
     };
   } catch (error) {
     console.error('Error fetching trust score:', error);

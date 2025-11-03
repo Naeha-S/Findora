@@ -5,7 +5,7 @@ import { PricingModel } from '../types';
 import { AlertTriangleIcon, CheckCircleIcon, ExternalLinkIcon, ArrowLeftIcon } from './Icons';
 import { TrustScoreBadge } from './TrustScoreBadge';
 import { TrustScore } from '../types';
-import { getTrustScore } from '../services/firestore';
+// Fetch trust score via backend admin endpoint to avoid client Firestore rules
 
 const timeSince = (date: string): string => {
   const seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
@@ -42,14 +42,21 @@ export const ToolDetailPage: React.FC = () => {
   useEffect(() => {
     if (tool && !trustScore && !loadingTrust) {
       setLoadingTrust(true);
-      getTrustScore(tool.id)
-        .then((score) => {
-          if (score) {
-            setTrustScore(score as TrustScore);
+      (async () => {
+        try {
+          const base = (import.meta as any)?.env?.VITE_API_BASE || `http://localhost:8080`;
+          const resp = await fetch(`${base}/api/tools/${tool.id}/trust`);
+          if (!resp.ok) return;
+          const json = await resp.json();
+          if (json?.trustScore) {
+            setTrustScore(json.trustScore as TrustScore);
           }
-        })
-        .catch(console.error)
-        .finally(() => setLoadingTrust(false));
+        } catch (e) {
+          console.error('Error fetching trust score (backend):', e);
+        } finally {
+          setLoadingTrust(false);
+        }
+      })();
     }
   }, [tool, trustScore, loadingTrust]);
 

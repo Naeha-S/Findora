@@ -21,8 +21,6 @@ const Checkbox: React.FC<{ label: string; checked: boolean; onChange: (checked: 
 );
 
 export const Sidebar: React.FC<SidebarProps> = ({ filters, setFilters, freshnessFilter, setFreshnessFilter }) => {
-    
-    // FIX: Corrected TypeScript syntax from 'key of' to 'keyof'. This resolves all reported errors.
     const handleQuickFilterChange = (key: keyof Filters, value: boolean) => {
         setFilters(prev => ({ ...prev, [key]: value }));
     };
@@ -36,7 +34,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ filters, setFilters, freshness
             return { ...prev, [key]: newValues };
         });
     };
-  
+
     const clearFilters = () => {
         setFilters({
             trulyFree: false,
@@ -49,15 +47,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ filters, setFilters, freshness
     };
 
     return (
-        <aside className="hidden lg:flex flex-col w-64 bg-gray-800 border-r border-gray-700 h-screen fixed top-0 left-0 z-40">
-            <div className="flex items-center h-16 px-6 border-b border-gray-700">
-                <h1 className="text-2xl font-bold text-white">
-                    Findora <span className="text-cyan-400">✨</span>
-                </h1>
+        <aside className="hidden lg:flex flex-col w-72 bg-slate-900/70 border-r border-slate-800 h-screen fixed top-0 left-0 z-40 backdrop-blur-md">
+            <div className="flex items-center h-16 px-6 border-b border-slate-800">
+                <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 bg-cyan-400/10 rounded-lg flex items-center justify-center text-cyan-300 font-bold">F</div>
+                    <h1 className="text-2xl font-extrabold text-slate-100 tracking-tight">Findora</h1>
+                </div>
             </div>
-            <div className="flex-grow p-6 overflow-y-auto space-y-8 custom-scrollbar">
+            <div className="flex-grow p-6 overflow-y-auto space-y-6 custom-scrollbar">
                 <div>
-                    <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Quick Filters</h3>
+                    <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Quick Filters</h3>
                     <div className="space-y-3">
                         <Checkbox label="Truly Free" checked={filters.trulyFree} onChange={(c) => handleQuickFilterChange('trulyFree', c)} />
                         <Checkbox label="No Signup Required" checked={filters.noSignup} onChange={(c) => handleQuickFilterChange('noSignup', c)} />
@@ -65,23 +64,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ filters, setFilters, freshness
                     </div>
                 </div>
                  <div>
-                    <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Pricing Model</h3>
-                    <div className="space-y-3">
+                    <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Pricing</h3>
+                    <div className="grid grid-cols-1 gap-2">
                         {pricingModelOptions.map(model => (
                             <Checkbox key={model} label={model.charAt(0).toUpperCase() + model.slice(1).replace('_only', '')} checked={filters.pricingModels.includes(model)} onChange={() => handleArrayFilterChange('pricingModels', model)} />
                         ))}
                     </div>
                 </div>
                 <div>
-                    <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Category</h3>
-                    <div className="space-y-3">
+                    <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Category</h3>
+                    <div className="grid grid-cols-1 gap-2">
                         {categoryOptions.map(cat => (
                            <Checkbox key={cat} label={cat} checked={filters.categories.includes(cat)} onChange={() => handleArrayFilterChange('categories', cat)} />
                         ))}
                     </div>
                 </div>
                 <div>
-                    <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Freshness</h3>
+                    <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Freshness</h3>
                     <div className="space-y-3">
                         <Checkbox label="Last 24 hours" checked={freshnessFilter === '24h'} onChange={(c) => setFreshnessFilter(c ? '24h' : 'all')} />
                         <Checkbox label="Last 7 days" checked={freshnessFilter === '7d'} onChange={(c) => setFreshnessFilter(c ? '7d' : 'all')} />
@@ -89,10 +88,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ filters, setFilters, freshness
                     </div>
                 </div>
             </div>
-            <div className="p-6 border-t border-gray-700">
-                <button onClick={clearFilters} className="w-full px-4 py-2 text-sm font-semibold text-white bg-gray-700 rounded-md hover:bg-gray-600 transition-colors">
-                    Clear All Filters
-                </button>
+            <div className="p-6 border-t border-slate-800">
+                <button onClick={clearFilters} className="w-full px-4 py-2 text-sm font-semibold text-slate-900 bg-cyan-300 rounded-md hover:opacity-95 transition">Clear Filters</button>
             </div>
         </aside>
     );

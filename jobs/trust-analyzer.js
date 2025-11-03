@@ -40,7 +40,7 @@ const getAI = () => {
 /**
  * Analyze privacy policy and terms of service
  */
-const analyzeTrustScore = async (toolName, privacyPolicyText, termsText, homepageText) => {
+export const analyzeTrustScore = async (toolName, privacyPolicyText, termsText, homepageText) => {
   const ai = getAI();
   const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
@@ -88,7 +88,7 @@ Analyze and return ONLY valid JSON:
 /**
  * Process trust analysis for a tool
  */
-const processTrustAnalysis = async (toolId, toolData) => {
+export const processTrustAnalysis = async (toolId, toolData) => {
   try {
     const { officialUrl } = toolData;
     
@@ -192,6 +192,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     process.exit(1);
   });
 }
-
-export { processTrustAnalysis, analyzeTrustScore };
 

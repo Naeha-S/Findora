@@ -140,6 +140,7 @@ const App: React.FC = () => {
       )}
 
       <main className="lg:ml-64">
+        <div className="max-w-7xl mx-auto px-4">
         {/* Mobile Header */}
         <header className="lg:hidden flex items-center justify-between p-4 bg-gray-800 border-b border-gray-700 sticky top-0 z-30">
              <h1 className="text-xl font-bold text-white">Findora <span className="text-cyan-400">✨</span></h1>
@@ -149,7 +150,7 @@ const App: React.FC = () => {
         </header>
         
         <div className="p-4 md:p-6 lg:p-8">
-          <div className="mb-6 sticky top-16 lg:top-0 z-20 bg-gray-900/80 backdrop-blur-sm py-4 -mx-4 px-4 md:-mx-6 md:px-6 lg:mx-0 lg:px-0">
+          <div className="mb-6 sticky top-16 lg:top-0 z-20 bg-gray-900/60 backdrop-blur-md py-4 -mx-4 px-4 md:-mx-6 md:px-6 lg:mx-0 lg:px-0 rounded-lg shadow-sm border border-gray-800">
             <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
               <div className="relative w-full md:max-w-md">
                 <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -158,7 +159,7 @@ const App: React.FC = () => {
                   placeholder="Search for AI tools..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    className="w-full bg-gray-900/80 border border-gray-700 rounded-lg pl-10 pr-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 shadow-sm"
                 />
                 <button
                   onClick={() => setShowTaskSearch(true)}
@@ -243,6 +244,7 @@ const App: React.FC = () => {
               )}
             </>
           )}
+        </div>
         </div>
       </main>
       <Chatbot tools={filteredAndSortedTools} />

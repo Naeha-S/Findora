@@ -40,7 +40,7 @@ const getAI = () => {
  * Prompt 1: Pricing Classifier
  * Extract pricing transparency from scraped website content
  */
-const classifyPricing = async (homepageText, pricingText, faqText) => {
+export const classifyPricing = async (homepageText, pricingText, faqText) => {
   const ai = getAI();
   const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
@@ -165,7 +165,7 @@ Return ONLY the JSON object.`;
 /**
  * Process a classification job
  */
-const processClassification = async (jobId, jobData) => {
+export const processClassification = async (jobId, jobData) => {
   try {
     const jobRef = db.collection('analysis_jobs').doc(jobId);
     
@@ -260,6 +260,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     process.exit(1);
   });
 }
-
-export { classifyPricing, extractToolName, processClassification };
 

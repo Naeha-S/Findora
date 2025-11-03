@@ -37,6 +37,12 @@ export const SearchIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   </svg>
 );
 
+export const SparklesIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <path d="M12 2.25a.75.75 0 01.673.418l.94 1.88 1.881.94a.75.75 0 01-.94 1.198l-1.88-.94-.94-1.88A.75.75 0 0112 2.25zM5.25 6.75a.75.75 0 01.67.413l.586 1.173 1.173.586a.75.75 0 11-.674 1.338l-1.173-.586-.586-1.173a.75.75 0 01.004-.751.75.75 0 01.403-.2zM18.5 9a.75.75 0 01.67.413l.586 1.173 1.173.586a.75.75 0 11-.674 1.338l-1.173-.586-.586-1.173a.75.75 0 01.004-.751.75.75 0 01.403-.2zM8.5 14.75a3.25 3.25 0 106.25 0 3.25 3.25 0 00-6.25 0z" />
+  </svg>
+);
+
 export const ChatBubbleIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />

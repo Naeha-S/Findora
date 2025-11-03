@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Tool, PricingModel } from '../types';
 import { Badge } from './Badge';
 import { FireIcon, AlertTriangleIcon, CheckCircleIcon } from './Icons';
-import { getTrustScore } from '../services/firestore';
 import { getTrustBadgeColor } from '../services/trustEngine';
 
 interface ToolCardProps {
@@ -41,22 +40,31 @@ export const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
   const [trustScore, setTrustScore] = useState<number | null>(null);
 
   useEffect(() => {
-    getTrustScore(tool.id).then(score => {
-      if (score) {
-        setTrustScore(score.overall);
+    // Fetch trust score from backend admin endpoint to avoid client Firestore rules
+    (async () => {
+      try {
+        const base = (import.meta as any)?.env?.VITE_API_BASE || `http://localhost:8080`;
+        const resp = await fetch(`${base}/api/tools/${tool.id}/trust`);
+        if (!resp.ok) return;
+        const json = await resp.json();
+        const score = json?.trustScore?.overall;
+        if (typeof score === 'number') setTrustScore(score);
+      } catch (e) {
+        // ignore failures silently
       }
-    }).catch(() => {});
+    })();
   }, [tool.id]);
 
   return (
-    <div className="bg-gray-800/50 border border-gray-700 rounded-lg shadow-lg overflow-hidden flex flex-col transition-all duration-300 hover:shadow-cyan-500/20 hover:border-cyan-700/70">
+    <div className="bg-gradient-to-br from-slate-800/60 via-slate-900/50 to-black/20 border border-slate-800 rounded-2xl overflow-hidden flex flex-col transition-transform duration-300 hover:shadow-2xl hover:scale-[1.01]">
       <div className="p-4 flex-grow">
-        <div className="flex justify-between items-start mb-2">
-          <Link to={`/tools/${tool.id}`} className="hover:text-cyan-400 transition-colors flex-1">
-            <h3 className="text-lg font-bold text-white pr-2">{name}</h3>
+        <div className="flex items-start justify-between gap-3 mb-3">
+          <Link to={`/tools/${tool.id}`} className="flex-1">
+            <h3 className="text-lg font-semibold text-slate-100 leading-tight line-clamp-2">{name}</h3>
+            <p className="text-sm text-slate-300 mt-2 line-clamp-2">{description}</p>
           </Link>
-          <div className="flex flex-col gap-1 items-end">
-            <div className="flex items-center text-sm font-semibold text-orange-400 bg-orange-900/50 px-2 py-1 rounded-full">
+          <div className="flex flex-col items-end gap-2">
+            <div className="flex items-center text-sm font-semibold text-amber-300 bg-amber-900/20 px-2 py-1 rounded-full">
               <FireIcon className="w-4 h-4 mr-1" />
               {trendScore}%
             </div>
@@ -67,64 +75,30 @@ export const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
             )}
           </div>
         </div>
-        
-        <Link to={`/tools/${tool.id}`} className="block hover:text-gray-300 transition-colors">
-          <p title={description} className="text-sm text-gray-400 mb-3 h-10 line-clamp-2">
-            {description}
-          </p>
 
-          <p className="text-sm text-gray-400 mb-1">{category}</p>
-          <p className="text-xs text-gray-500">First seen: {timeSince(firstSeenAt)} &bull; {mentionCount} mentions</p>
-        </Link>
-      </div>
-
-      <div className="px-4 py-3 bg-gray-900/30 border-t border-gray-700/50 space-y-2">
-        <div className="flex items-center justify-between">
-            <div className="flex items-center">
-                <span className="text-sm font-semibold text-gray-300 w-8">💰</span>
-                <Badge text={pricing.model.replace('_only', '')} color={getPricingBadgeColor(pricing.model)} />
-            </div>
-            <p className="text-xs text-gray-500 whitespace-nowrap pl-2">
-                Verified: {timeSince(pricing.lastCheckedAt)}
-            </p>
+        <div className="flex items-center justify-between mt-4 text-sm text-slate-400">
+          <div className="flex items-center gap-3">
+            <Badge text={pricing.model.replace('_only', '')} color={getPricingBadgeColor(pricing.model)} />
+            <span className="px-2 py-1 bg-slate-800 rounded-md text-xs">{category}</span>
+          </div>
+          <div className="text-xs text-slate-500">{mentionCount} mentions</div>
         </div>
-        {freeTier.exists && (
-          <>
-            <div className="flex items-center">
-                <span className="text-sm font-semibold text-gray-300 w-8">📊</span>
-                <p className="text-xs text-gray-300 truncate">{freeTier.limit}</p>
-            </div>
-            <div className="flex items-center">
-                <span className="text-sm font-semibold text-gray-300 w-8">🔓</span>
-                {freeTier.requiresCard ? (
-                    <Badge text="Card Required" color="yellow" icon={<AlertTriangleIcon className="w-3 h-3" />} />
-                ) : (
-                    <Badge text="No Card Required" color="green" icon={<CheckCircleIcon className="w-3 h-3" />} />
-                )}
-                 {freeTier.watermark && (
-                    <span className="ml-2">
-                        <Badge text="Watermark" color="yellow" icon={<AlertTriangleIcon className="w-3 h-3" />} />
-                    </span>
-                 )}
-            </div>
-          </>
-        )}
       </div>
 
-      <div className="p-4 bg-gray-800/50 border-t border-gray-700/50 flex gap-2">
+      <div className="px-4 py-3 bg-transparent border-t border-slate-800 flex gap-3">
         <Link 
           to={`/tools/${tool.id}`}
-          className="flex-1 text-center bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300"
+          className="flex-1 text-center bg-slate-800/60 hover:bg-slate-800/80 text-slate-100 font-semibold py-2 rounded-full transition-all"
         >
-          View Details
+          View
         </Link>
         <a 
           href={officialUrl} 
           target="_blank" 
           rel="noopener noreferrer" 
-          className="flex-1 text-center bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2 px-4 rounded-md transition-colors duration-300"
+          className="flex-1 text-center bg-gradient-to-r from-cyan-500 to-violet-500 hover:opacity-95 text-white font-bold py-2 rounded-full transition-all"
         >
-          Visit Tool &rarr;
+          Visit
         </a>
       </div>
     </div>

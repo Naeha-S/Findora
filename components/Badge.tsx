@@ -9,15 +9,15 @@ interface BadgeProps {
 
 export const Badge: React.FC<BadgeProps> = ({ text, color, icon }) => {
   const colorClasses = {
-    green: 'bg-green-800/50 text-green-300 border border-green-700/50',
-    blue: 'bg-blue-800/50 text-blue-300 border border-blue-700/50',
-    orange: 'bg-orange-800/50 text-orange-300 border border-orange-700/50',
-    yellow: 'bg-yellow-800/50 text-yellow-300 border border-yellow-700/50',
-    gray: 'bg-gray-700/50 text-gray-300 border border-gray-600/50'
+    green: 'bg-emerald-900/40 text-emerald-300 border border-emerald-800/40 shadow-sm',
+    blue: 'bg-indigo-900/40 text-indigo-300 border border-indigo-800/40 shadow-sm',
+    orange: 'bg-amber-900/40 text-amber-300 border border-amber-800/40 shadow-sm',
+    yellow: 'bg-amber-800/40 text-amber-200 border border-amber-700/30 shadow-sm',
+    gray: 'bg-slate-800/40 text-slate-300 border border-slate-700/30 shadow-sm'
   };
 
   return (
-    <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${colorClasses[color]}`}>
+    <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${colorClasses[color]}`}>
       {icon && <span className="mr-1">{icon}</span>}
       {text}
     </div>
